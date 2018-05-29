@@ -10,13 +10,14 @@ import schema from './graphql'
 import { createServer } from 'http'
 import { execute, subscribe } from 'graphql'
 import { SubscriptionServer } from 'subscriptions-transport-ws'
+import './utils//logger'
 
 dotenv.config()
 
 mongoose.connect(process.env.DB, (error, db) => {
-  if (error) return console.log(error);
+  if (error) return console.error(error);
 
-  return console.log('Connect mongoDB successful')
+  return console.info('Connect mongoDB successful')
 })
 
 const app = express()
@@ -41,7 +42,7 @@ app.use('/graphiql', graphiqlExpress({
 }))
 
 ws.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`)
+  console.info(`Server is running on port ${process.env.PORT}`)
 
   new SubscriptionServer({
     execute,

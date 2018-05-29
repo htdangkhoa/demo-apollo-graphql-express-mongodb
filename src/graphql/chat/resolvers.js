@@ -11,7 +11,7 @@ const chats = () => {
 
 const sendMessage = (_, args) => {
   let { username, message } = args
-  console.log(args)
+  console.debug(args)
   let chat = { username, message }
 
   messages.push(chat)

@@ -1,26 +1,33 @@
 import Todo from '../../models/todo'
+import { verify } from '../../utils/jwt'
 
-const getAllTodos = () => {
-  return new Promise((resolve, reject) => {
-    Todo.find()
-    .then(todos => resolve(todos))
-    .catch(error => reject(error))
-  })
+const getAllTodos = async (_, args, context) => {
+  let { token } = context
+
+  var payload = await verify(token)
+  
+  if (!payload) throw 'invalid token.'
+  
+  var todos = await Todo.find()
+
+  return todos
 }
 
-const addTodo = (_, args) => {
+const addTodo = async (_, args, context) => {
   let { title, body } = args
-
-  return new Promise((resolve, reject) => {
-    new Todo({
-      title,
-      body
-    }).save((error, todo) => {
-      if (error) return reject(error)
-
-      return resolve(todo)
-    })
+  
+  let todo = new Todo({
+    title,
+    body
   })
+
+  try {
+    let result = await todo.save()
+
+    return result
+  } catch (error) {
+    throw error
+  }
 }
 
 export default {

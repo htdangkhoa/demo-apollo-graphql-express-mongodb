@@ -3,12 +3,11 @@ import mongoose, { Schema } from 'mongoose'
 const User = new Schema({
   _id: {
     type: Schema.Types.ObjectId,
-    default: () => {
-      return mongoose.Types.ObjectId()
-    }
+    default: () => mongoose.Types.ObjectId()
   },
-  username: {
+  email: {
     type: Schema.Types.String,
+    lowercase: true,
     unique: true
   },
   password: {
