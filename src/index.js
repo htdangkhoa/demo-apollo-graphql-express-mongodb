@@ -3,6 +3,7 @@ import express from 'express'
 import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import cors from 'cors'
+import helmet from 'helmet'
 import {  graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import { makeExecutableSchema } from 'graphql-tools'
 import schema from './graphql'
@@ -27,6 +28,7 @@ app.use([
   cors(),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: false }),
+  helmet()
 ])
 
 app.use('/graphql', graphqlExpress((req, res) => {
