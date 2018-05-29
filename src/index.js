@@ -4,6 +4,7 @@ import dotenv from 'dotenv'
 import bodyParser from 'body-parser'
 import cors from 'cors'
 import helmet from 'helmet'
+import session from 'express-session'
 import {  graphqlExpress, graphiqlExpress } from 'apollo-server-express'
 import { makeExecutableSchema } from 'graphql-tools'
 import schema from './graphql'
@@ -28,14 +29,21 @@ app.use([
   cors(),
   bodyParser.json(),
   bodyParser.urlencoded({ extended: false }),
-  helmet()
+  helmet(),
+  session({
+    secret: 'keyboard cat',
+    saveUninitialized: true,
+    resave: true,
+    cookie: { maxAge: 30000 }
+  })
 ])
 
 app.use('/graphql', graphqlExpress((req, res) => {
   const token = req.headers.authorization
   return {
     schema,
-    context: { token }
+    context: { token },
+    rootValue: { req, res }
   }
 }))
 app.use('/graphiql', graphiqlExpress({ 

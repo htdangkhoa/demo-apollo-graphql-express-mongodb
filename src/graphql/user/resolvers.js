@@ -30,7 +30,10 @@ const getAllUsers = async (_, args, context) => {
   return users
 }
 
-const login = async (_, args) => {
+const login = async (root, args) => {
+  let { req } = root
+  if (req.session.token) throw `You're already login.`
+
   let { email, password } = args.request
 
   let user = await User.findOne({ email })
@@ -38,6 +41,7 @@ const login = async (_, args) => {
   if (!user || user.password != password) throw `Email or password is not correct.`
 
   let token = await sign(user)
+  req.session.token = token
 
   return { token }
 }
