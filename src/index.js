@@ -16,7 +16,7 @@ dotenv.config()
 mongoose.connect(process.env.DB, (error, db) => {
   if (error) return console.log(error);
 
-  return console.log('Connect mongoDB successful');
+  return console.log('Connect mongoDB successful')
 })
 
 const app = express()
@@ -25,10 +25,16 @@ const ws = createServer(app)
 app.use([
   cors(),
   bodyParser.json(),
-  bodyParser.urlencoded({ extended: false })
+  bodyParser.urlencoded({ extended: false }),
 ])
 
-app.use('/graphql', graphqlExpress({ schema }))
+app.use('/graphql', graphqlExpress((req, res) => {
+  const token = req.headers.authorization
+  return {
+    schema,
+    context: { token }
+  }
+}))
 app.use('/graphiql', graphiqlExpress({ 
   endpointURL: '/graphql',
   subscriptionsEndpoint: `ws://localhost:${process.env.PORT}/subscriptions`
